@@ -59,13 +59,12 @@
 
 // struct to be casted as char array for network transmission
 #define MAP_ELEMENTS 1024
-#define MAP_SIZE ( (MAP_ELEMENTS * sizeof(float)) + (2 * sizeof(qint64)) + sizeof(size_t) + sizeof(char) )
 typedef struct {
-    qint64 begin; //beginning of the range
-    qint64 step; //step size in Hz
-    size_t size; //number of steps
-    float  snr[MAP_ELEMENTS]; // signal to noise ratio per step
-    char   end; //end of the struct
+    qint64 begin;             // beginning of the range
+    qint64 step;              // step size in Hz
+    size_t size;              // number of steps
+    double snr[MAP_ELEMENTS]; // signal to noise ratio per step
+    char   end;                 // end of the struct
 } snr_map_t;
 
 class RemoteControl : public QObject
