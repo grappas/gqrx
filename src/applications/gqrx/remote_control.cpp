@@ -249,6 +249,8 @@ void RemoteControl::startRead()
         answer = QString("0\n");
     else if (cmd == "\\dump_state")
         answer = cmd_dump_state();
+    else if (cmd == "\\dump_map")
+        answer = cmd_dump_map();
     else if (cmd == "\\get_powerstat")
         answer = QString("1\n");
     else if (cmd == "q" || cmd == "Q")
@@ -906,6 +908,14 @@ QString RemoteControl::cmd_lnb_lo(QStringList cmdlist)
  *  https://github.com/N0NB/hamlib/blob/master/include/hamlib/rig.h (bit fields)
  *  https://github.com/N0NB/hamlib/blob/master/dummy/netrigctl.c
  */
+
+
+QString RemoteControl::cmd_dump_map() const
+{
+    char
+    return QString(reinterpret_cast<char *>(snr_map));
+}
+
 QString RemoteControl::cmd_dump_state() const
 {
     return QString(

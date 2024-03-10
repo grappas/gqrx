@@ -58,11 +58,14 @@
  */
 
 // struct to be casted as char array for network transmission
+#define MAP_ELEMENTS 1024
+#define MAP_SIZE ( (MAP_ELEMENTS * sizeof(float)) + (2 * sizeof(qint64)) + sizeof(size_t) + sizeof(char) )
 typedef struct {
     qint64 begin; //beginning of the range
     qint64 step; //step size in Hz
     size_t size; //number of steps
-    float  snr[1024]; // signal to noise ratio per step
+    float  snr[MAP_ELEMENTS]; // signal to noise ratio per step
+    char   end; //end of the struct
 } snr_map_t;
 
 class RemoteControl : public QObject
@@ -150,6 +153,7 @@ private:
     bool        receiver_running;  /*!< Whether the receiver is running or not */
     bool        hamlib_compatible;
     gain_list_t gains;             /*!< Possible and current gain settings */
+    snr_map_t   snr_map;           /*!< Signal to noise ratio map */
 
     void        setNewRemoteFreq(qint64 freq);
     int         modeStrToInt(QString mode_str);
@@ -174,6 +178,7 @@ private:
     QString     cmd_LOS();
     QString     cmd_lnb_lo(QStringList cmdlist);
     QString     cmd_dump_state() const;
+    QString     cmd_dump_map() const;
 };
 
 #endif // REMOTE_CONTROL_H
