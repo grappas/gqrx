@@ -56,6 +56,15 @@
  *
  * FIXME: The server code is very minimalistic and probably not very robust.
  */
+
+// struct to be casted as char array for network transmission
+typedef struct {
+    qint64 begin; //beginning of the range
+    qint64 step; //step size in Hz
+    size_t size; //number of steps
+    float  snr[1024]; // signal to noise ratio per step
+} snr_map_t;
+
 class RemoteControl : public QObject
 {
     Q_OBJECT
