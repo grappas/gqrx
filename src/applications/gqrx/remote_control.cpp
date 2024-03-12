@@ -920,7 +920,7 @@ QString RemoteControl::cmd_dump_map() const
     answer.append(QString("%1\n").arg(snr_map.step));
     answer.append(QString("%1\n").arg(snr_map.size));
     for (size_t i = 0; i < snr_map.size; i++)
-        answer.append(QString("%1\n").arg(snr_map.snr[i]));
+        answer.append(QString("%1\n").arg((double)snr_map.snr[i], 0, 'f', 1));
 
     return answer;
 }
