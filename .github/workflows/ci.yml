@@ -10,6 +10,7 @@ jobs:
         image:
           - "ubuntu:20.04"
           - "ubuntu:22.04"
+          - "ubuntu:24.04"
         backend:
           - Pulseaudio
           - Portaudio
@@ -36,13 +37,13 @@ jobs:
             appstream \
             desktop-file-utils
       - name: Install Qt5
-        if: matrix.image != 'ubuntu:22.04'
+        if: matrix.image == 'ubuntu:20.04'
         run: |
           apt-get install -y \
             qt5-default \
             libqt5svg5-dev
       - name: Install Qt6
-        if: matrix.image == 'ubuntu:22.04'
+        if: matrix.image != 'ubuntu:20.04'
         run: |
           apt-get install -y \
             qt6-base-dev \
@@ -60,23 +61,21 @@ jobs:
         working-directory: build
         run: make -j4
       - name: Validate desktop entry
-        if: matrix.image != 'ubuntu:18.04'
         run: desktop-file-validate dk.gqrx.gqrx.desktop
       - name: Validate appstream metadata
-        if: matrix.image != 'ubuntu:18.04'
         run: appstreamcli validate dk.gqrx.gqrx.appdata.xml
   macos-build:
     name: MacOS CI
     strategy:
       matrix:
-        os: [macos-12]
+        os: [macos-12, macos-13]
         backend: [Portaudio, Gr-audio]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install dependencies
         run: |
           brew update
-          brew install airspy boost gnuradio hackrf libbladerf librtlsdr pybind11 uhd qt@6 || true
+          brew install airspy boost gnuradio hackrf libbladerf librtlsdr pybind11 six uhd qt@6 || true
 
           cd /tmp
           git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
@@ -123,7 +122,7 @@ jobs:
     - name: Clone and build GNU Radio
       working-directory: ${{ runner.temp }}
       run: |
-        git clone --depth 1 https://github.com/gnuradio/gnuradio.git
+        git clone --branch v3.10.9.2 --depth 1 https://github.com/gnuradio/gnuradio.git
         cd gnuradio
         cmake -S . -B build \
           -DCMAKE_INSTALL_PREFIX=${RUNNER_TEMP}/msys64/mingw64 \
