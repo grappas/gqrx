@@ -276,6 +276,7 @@ void RemoteControl::startRead()
             qWarning() << "Unknown remote command:" << cmdlist;
             answer = QString("RPRT 1\n");
         }
+        rc_socket->write(answer.toLatin1());
     }
 }
 
