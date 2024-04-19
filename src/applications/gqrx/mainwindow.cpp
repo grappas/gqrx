@@ -1505,6 +1505,8 @@ void MainWindow::iqFftTimeout()
 
     if (rx->get_iq_fft_data(d_iqFftData.data()) >= 0)
         ui->plotter->setNewFftData(d_iqFftData.data(), fftsize);
+
+    remote->populate_map(d_iqFftData);
 }
 
 /** Audio FFT plot timeout. */

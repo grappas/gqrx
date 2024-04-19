@@ -58,13 +58,10 @@
  */
 
 // struct to be casted as char array for network transmission
-#define MAP_ELEMENTS 1024
 typedef struct {
-    qint64 begin;             // beginning of the range
-    qint64 step;              // step size in Hz
-    size_t size;              // number of steps
-    float snr[MAP_ELEMENTS]; // signal to noise ratio per step
-    char   end;                 // end of the struct
+    qint64              irate;             // input rate
+    qint64              hfreq;             // hardware freq set
+    std::vector<float>  snr;               // snr gathered
 } snr_map_t;
 
 class RemoteControl : public QObject
@@ -86,6 +83,7 @@ public:
         return rc_port;
     }
 
+    void populate_map(std::vector<float> map);
     void setHosts(QStringList hosts);
     QStringList getHosts(void) const
     {
@@ -127,6 +125,7 @@ signals:
 private slots:
     void acceptConnection();
     void startRead();
+    void populate_frequency(qint64 freq);
 
 private:
     QTcpServer  rc_server;         /*!< The active server object. */

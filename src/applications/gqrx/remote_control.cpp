@@ -58,11 +58,8 @@ RemoteControl::RemoteControl(QObject *parent) :
     rc_socket = 0;
 
     // initialize snr_map
-    snr_map.begin = 1;
-    snr_map.step = 12500;
-    snr_map.size = MAP_ELEMENTS;
-    std::fill_n(snr_map.snr, MAP_ELEMENTS, 0.0);
-    snr_map.end = '\0';
+    snr_map.irate = 18000;
+    snr_map.hfreq = 24000;
 
     connect(&rc_server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
 }
@@ -356,6 +353,7 @@ void RemoteControl::setNewRemoteFreq(qint64 freq)
             rc_filter_offset = 0.2f * bwh_eff;
         emit newFilterOffset(rc_filter_offset);
         emit newFrequency(freq);
+        populate_frequency(freq);
     }
 
     rc_freq = freq;
@@ -917,13 +915,21 @@ QString RemoteControl::cmd_dump_map() const
 {
     QString answer;
 
-    answer.append(QString("%1\n").arg(snr_map.begin));
-    answer.append(QString("%1\n").arg(snr_map.step));
-    answer.append(QString("%1\n").arg(snr_map.size));
-    for (size_t i = 0; i < snr_map.size; i++)
+    answer.append(QString("%1\n").arg(snr_map.hfreq));
+    answer.append(QString("%1\n").arg(snr_map.irate));
+    answer.append(QString("%1\n").arg(snr_map.snr.size()));
+    for (size_t i = 0; i < snr_map.snr.size(); i++)
         answer.append(QString("%1\n").arg((double)snr_map.snr[i], 0, 'f', 1));
 
     return answer;
+}
+
+void RemoteControl::populate_map(std::vector<float> map) {
+    snr_map.snr = map;
+}
+
+void RemoteControl::populate_frequency(qint64 freq){
+    snr_map.irate = freq;
 }
 
 /*
