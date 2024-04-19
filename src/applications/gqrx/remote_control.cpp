@@ -52,14 +52,13 @@ RemoteControl::RemoteControl(QObject *parent) :
     receiver_running = false;
     hamlib_compatible = false;
 
+    snr_map.hfreq = 0;
+    snr_map.irate = 0;
+
     rc_port = DEFAULT_RC_PORT;
     rc_allowed_hosts.append(DEFAULT_RC_ALLOWED_HOSTS);
 
     rc_socket = 0;
-
-    // initialize snr_map
-    snr_map.irate = 18000;
-    snr_map.hfreq = 24000;
 
     connect(&rc_server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
 }
@@ -915,12 +914,12 @@ QString RemoteControl::cmd_dump_map() const
 {
     QString answer;
 
+    for (size_t i = 0; i < snr_map.snr.size(); i++)
+        answer.append(QString("%1 ").arg((double)snr_map.snr[i], 0, 'f', 1));
+    answer.append(QString("\n").arg(snr_map.snr.size()));
     answer.append(QString("%1\n").arg(snr_map.hfreq));
     answer.append(QString("%1\n").arg(snr_map.irate));
     answer.append(QString("%1\n").arg(snr_map.snr.size()));
-    for (size_t i = 0; i < snr_map.snr.size(); i++)
-        answer.append(QString("%1\n").arg((double)snr_map.snr[i], 0, 'f', 1));
-
     return answer;
 }
 
@@ -929,9 +928,12 @@ void RemoteControl::populate_map(std::vector<float> map) {
 }
 
 void RemoteControl::populate_frequency(qint64 freq){
-    snr_map.irate = freq;
+    snr_map.hfreq = freq;
 }
 
+void RemoteControl::populate_input_rate(qint64 irate){
+    snr_map.irate = irate;
+}
 /*
  * '\dump_state' used by hamlib clients, e.g. xdx, fldigi, rigctl and etc
  * More info:

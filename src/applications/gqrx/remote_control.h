@@ -84,6 +84,8 @@ public:
     }
 
     void populate_map(std::vector<float> map);
+    void populate_frequency(qint64 freq);
+    void populate_input_rate(qint64 irate);
     void setHosts(QStringList hosts);
     QStringList getHosts(void) const
     {
@@ -125,7 +127,6 @@ signals:
 private slots:
     void acceptConnection();
     void startRead();
-    void populate_frequency(qint64 freq);
 
 private:
     QTcpServer  rc_server;         /*!< The active server object. */
