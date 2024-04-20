@@ -924,10 +924,11 @@ QString RemoteControl::cmd_dump_map() const
 }
 
 void RemoteControl::populate_map(const std::vector<float> map) {
-    auto cache = map;
+    std::vector<float> cache;
+    cache.reserve(map.size());
 
     for (size_t i = 0 ; i < map.size(); i++) {
-        cache[i] = 20.f * log10f(cache[i]/200.f);
+        cache.push_back(20.f * log10f(map[i] / 200.f));
     }
 
     snr_map.snr = cache;
