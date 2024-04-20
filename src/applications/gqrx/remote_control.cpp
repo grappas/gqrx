@@ -914,24 +914,30 @@ QString RemoteControl::cmd_dump_map() const
 {
     QString answer;
 
-    for (size_t i = 0; i < snr_map.snr.size(); i++)
-        answer.append(QString("%1 ").arg((double)snr_map.snr[i], 0, 'f', 1));
-    answer.append(QString("\n").arg(snr_map.snr.size()));
     answer.append(QString("%1\n").arg(snr_map.hfreq));
     answer.append(QString("%1\n").arg(snr_map.irate));
     answer.append(QString("%1\n").arg(snr_map.snr.size()));
+    for (size_t i = 0; i < snr_map.snr.size(); i++)
+        answer.append(QString("%1 ").arg((double)snr_map.snr[i], 0, 'f', 1));
+    answer.append(QString("\n"));
     return answer;
 }
 
-void RemoteControl::populate_map(std::vector<float> map) {
-    snr_map.snr = map;
+void RemoteControl::populate_map(const std::vector<float> map) {
+    auto cache = map;
+
+    for (size_t i = 0 ; i < map.size(); i++) {
+        cache[i] = 20.f * log10f(cache[i]/200.f);
+    }
+
+    snr_map.snr = cache;
 }
 
-void RemoteControl::populate_frequency(qint64 freq){
+void RemoteControl::populate_frequency(const qint64 freq){
     snr_map.hfreq = freq;
 }
 
-void RemoteControl::populate_input_rate(qint64 irate){
+void RemoteControl::populate_input_rate(const qint64 irate){
     snr_map.irate = irate;
 }
 /*
