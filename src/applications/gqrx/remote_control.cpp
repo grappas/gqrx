@@ -255,7 +255,7 @@ void RemoteControl::startRead()
             answer = QString("0\n");
         else if (cmd == "\\dump_state")
             answer = cmd_dump_state();
-        else if (cmd == "\\dump_map")
+        else if (cmd == "\\dump_fft")
             answer = cmd_dump_fft();
         else if (cmd == "\\get_powerstat")
             answer = QString("1\n");
