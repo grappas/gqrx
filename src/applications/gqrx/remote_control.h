@@ -61,7 +61,7 @@
 typedef struct {
     qint64              irate;             // input rate
     qint64              hfreq;             // hardware freq set
-    std::vector<float>  snr;               // snr gathered
+    std::vector<float>*  snr;               // snr gathered
 } snr_map_t;
 
 class RemoteControl : public QObject
@@ -83,7 +83,7 @@ public:
         return rc_port;
     }
 
-    void populate_map(const std::vector<float> map);
+    void populate_map(std::vector<float> *map);
     void populate_frequency(const qint64 freq);
     void populate_input_rate(const qint64 irate);
     void setHosts(QStringList hosts);
@@ -177,7 +177,7 @@ private:
     QString     cmd_LOS();
     QString     cmd_lnb_lo(QStringList cmdlist);
     QString     cmd_dump_state() const;
-    QString     cmd_dump_map() const;
+    QString     cmd_dump_fft() const;
 };
 
 #endif // REMOTE_CONTROL_H

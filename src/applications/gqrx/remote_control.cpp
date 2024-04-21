@@ -255,7 +255,7 @@ void RemoteControl::startRead()
         else if (cmd == "\\dump_state")
             answer = cmd_dump_state();
         else if (cmd == "\\dump_map")
-            answer = cmd_dump_map();
+            answer = cmd_dump_fft();
         else if (cmd == "\\get_powerstat")
             answer = QString("1\n");
         else if (cmd == "q" || cmd == "Q")
@@ -910,28 +910,26 @@ QString RemoteControl::cmd_lnb_lo(QStringList cmdlist)
 
 // Dump signal to noise ratio map
 // \dump_map
-QString RemoteControl::cmd_dump_map() const
+QString RemoteControl::cmd_dump_fft() const
 {
     QString answer;
 
     answer.append(QString("%1\n").arg(snr_map.hfreq));
     answer.append(QString("%1\n").arg(snr_map.irate));
-    answer.append(QString("%1\n").arg(snr_map.snr.size()));
-    for (size_t i = 0; i < snr_map.snr.size(); i++)
-        answer.append(QString("%1 ").arg((double)snr_map.snr[i], 0, 'f', 1));
+    answer.append(QString("%1\n").arg(snr_map.snr->size()));
+    for (size_t i = 0; i < snr_map.snr->size(); i++)
+        answer.append(QString("%1 ").arg((double)( * snr_map.snr )[i], 0, 'f', 1));
     answer.append(QString("\n"));
     return answer;
 }
 
-void RemoteControl::populate_map(const std::vector<float> map) {
-    std::vector<float> cache;
-    cache.reserve(map.size());
-
-    for (size_t i = 0 ; i < map.size(); i++) {
-        cache.push_back(20.f * log10f(map[i] / 200.f));
-    }
-
-    snr_map.snr = cache;
+// if you want to convert it into SNR (dBFS)
+// it should look like this
+/* for (size_t i = 0 ; i < map.size(); i++) { */
+/*     cache.push_back(20.f * log10f(map[i] / 200.f)); */
+/* } */
+void RemoteControl::populate_map(std::vector<float> *map) {
+    snr_map.snr = map;
 }
 
 void RemoteControl::populate_frequency(const qint64 freq){
