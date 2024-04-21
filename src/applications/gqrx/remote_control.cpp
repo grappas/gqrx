@@ -918,7 +918,7 @@ QString RemoteControl::cmd_dump_fft() const
     answer.append(QString("%1\n").arg(snr_map.irate));
     answer.append(QString("%1\n").arg(snr_map.snr->size()));
     for (size_t i = 0; i < snr_map.snr->size(); i++)
-        answer.append(QString("%1 ").arg((double)( * snr_map.snr )[i], 0, 'f', 1));
+        answer.append(QString("%1 ").arg((double)( * snr_map.snr )[i], 0, 'f', 10));
     answer.append(QString("\n"));
     return answer;
 }
