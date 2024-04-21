@@ -54,6 +54,7 @@ RemoteControl::RemoteControl(QObject *parent) :
 
     snr_map.hfreq = 0;
     snr_map.irate = 0;
+    snr_map.snr = nullptr;
 
     rc_port = DEFAULT_RC_PORT;
     rc_allowed_hosts.append(DEFAULT_RC_ALLOWED_HOSTS);
@@ -912,6 +913,10 @@ QString RemoteControl::cmd_lnb_lo(QStringList cmdlist)
 // \dump_map
 QString RemoteControl::cmd_dump_fft() const
 {
+    if (snr_map.snr == nullptr){
+        return QString("RPRT 1\n");
+    }
+
     QString answer;
 
     answer.append(QString("%1\n").arg(snr_map.hfreq));
@@ -928,8 +933,8 @@ QString RemoteControl::cmd_dump_fft() const
 /* for (size_t i = 0 ; i < map.size(); i++) { */
 /*     cache.push_back(20.f * log10f(map[i] / 200.f)); */
 /* } */
-void RemoteControl::populate_map(std::vector<float> *map) {
-    snr_map.snr = map;
+void RemoteControl::populate_map(const std::vector<float> *map) {
+    snr_map.snr = const_cast<std::vector<float>*>(map);
 }
 
 void RemoteControl::populate_frequency(const qint64 freq){

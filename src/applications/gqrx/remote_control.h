@@ -83,7 +83,7 @@ public:
         return rc_port;
     }
 
-    void populate_map(std::vector<float> *map);
+    void populate_map(const std::vector<float> *map);
     void populate_frequency(const qint64 freq);
     void populate_input_rate(const qint64 irate);
     void setHosts(QStringList hosts);
